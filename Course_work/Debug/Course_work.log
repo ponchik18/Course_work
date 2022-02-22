@@ -1,0 +1,3 @@
+﻿  Main.cpp
+D:\Учёба\Course_work\Course_work\Main.cpp(3,8): warning C4930: Users ps(void): функция с прототипом не вызвана (предполагалось определение переменной?)
+  Course_work.vcxproj -> D:\Учёба\Course_work\Debug\Course_work.exe
