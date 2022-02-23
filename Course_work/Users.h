@@ -1,26 +1,39 @@
 #pragma once
-#include"Product.h"
-#include<Windows.h>
-
+#include"library.h"
 //Создание классов и прототипов методов, реализация методов вынесена в файл <Users.cpp>
 
 class Users // базовый класс 
 {
-
+	
 protected:
+	class Console;
 	void SortProductByProductName(Product* pd);//сортировка по наименованию
 	void SortProductByProductData(Product* pd);//сортировка по дате
 	void SortProductByProductPrise(Product* pd);//сортировка по цене
+	void CinMenu(string*  menu, int lengh, Console& p); //вывод параметров меню
 	class Console {
 	public:
 		HANDLE hStdOut; //дискриптор консоли
-		Console() {hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);} // Получаем дескриптор консоли
-		void GoToXY(short y, short x); //перемещение курсора
+		int ActiveMenu; //активная часть меню
+		int ActiveMenuStart; // линия начала меню
+		int ActiveMenuEnd; //линия конца меню
+		Console(int amend, int amstart = 4) {
+			hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);// Получаем дескриптор консоли
+			this->ActiveMenu = this->ActiveMenuStart=amstart;
+			this->ActiveMenuEnd = amend;
+			} 
+		void GoToXY(short y, short x=40); //перемещение курсора
 		void ConsoleCursorVisible(bool show, short size);// изменяем размер и видимость курсора
-		void ConsoleTextColor(int& n, int &am);// меняем цвет текста строки, что m=n
-
+		void ConsoleActiveTextColor(int& n, int &am);// меняем цвет текста строки, что m = n
+		void ConsoleTextColor();// меняем цвет обычного текста
+		void ConsoleMenuColorText();//меняем цвет меню
+		void PointerMove(Console &p);// метод для отслеживания нажатия клавиши
+		
+		//void menuShow(string menuName); //в функцию передаётся строка, которая будет отражаться на панели меню
 	};
 public:
+	void menuShow(string menuName, Console& text); //в функцию передаётся строка, которая будет отражаться на панели меню
+
 	void showInfoAboutProduct(Product* pd) const;//вывод информации об товарах
 	void cinInfoAboutProduct(Product* pd); //ввод информации об товаре
 	void searchProductByFields(Product* pd) const;// поиск товора(-ов) по полю

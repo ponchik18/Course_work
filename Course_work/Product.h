@@ -1,5 +1,5 @@
 #pragma once
-#include<string>
+#include"library.h"
 class Product //Класс товар на складе
 {
 private:
