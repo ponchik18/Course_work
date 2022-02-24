@@ -10,7 +10,7 @@ protected:
 	void SortProductByProductName(Product* pd);//сортировка по наименованию
 	void SortProductByProductData(Product* pd);//сортировка по дате
 	void SortProductByProductPrise(Product* pd);//сортировка по цене
-	void CinMenu(string*  menu, int lengh, Console& p); //вывод параметров меню
+	void CinMenu(valarray<string> &menu, Console& p); //вывод параметров меню
 	class Console {
 	public:
 		HANDLE hStdOut; //дискриптор консоли
@@ -24,10 +24,11 @@ protected:
 			} 
 		void GoToXY(short y, short x=40); //перемещение курсора
 		void ConsoleCursorVisible(bool show, short size);// изменяем размер и видимость курсора
-		void ConsoleActiveTextColor(int& n, int &am);// меняем цвет текста строки, что m = n
+		void ConsoleActiveTextColor(int&& n, Console& p);// меняем цвет текста строки, что m = n
+		void SetTextActiveColor(Console& p);//ставим цвет активного поля меню
 		void ConsoleTextColor();// меняем цвет обычного текста
 		void ConsoleMenuColorText();//меняем цвет меню
-		void PointerMove(Console &p);// метод для отслеживания нажатия клавиши
+		void PointerMove();// метод для отслеживания нажатия клавиши
 		
 		//void menuShow(string menuName); //в функцию передаётся строка, которая будет отражаться на панели меню
 	};

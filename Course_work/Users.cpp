@@ -11,15 +11,24 @@ void Administrators::establishMenuForWorkingMode()
 
 }
 
-void Users::CinMenu(string* menu, int lengh, Console &p)
+void Users::CinMenu(valarray<string>& menu, Console &p)
 {
-
-	for (int i = 0; i < lengh; i++) {
+	cout << "|";
+	p.GoToXY(p.ActiveMenuStart-1,133);
+	cout << "|";
+	for (int i = 0; i < menu.size(); i++) {
+		cout << "|";
 		p.GoToXY(p.ActiveMenuStart+i);
-		cout << *menu << endl;
-		menu++;
+		
+		p.ConsoleActiveTextColor(p.ActiveMenuStart + i, p);
+		cout << menu[i] << endl;
+		p.ConsoleTextColor();//ставим значение цвета по умолчанию
+		p.GoToXY(p.ActiveMenuStart + i,133);
+		cout << "|"<<endl;
 	}
+	cout << "+------------------------------------------------------------------------------------------------------------------------------------+" << endl;
 }
+
 
 void Users::menuShow(string menuName, Console & text)
 {
@@ -36,17 +45,22 @@ void Users::menuShow(string menuName, Console & text)
 
 void Users::menuForOnlyReadInfo()
 {
-	Console text(9);
-	Users::menuShow("Меню для чтения данных", text);
-	string menu[5] = {
-		"Чтение информации о товаре с файла;",
-		"Вывести данные об всех товарах;",
-		"Поиск элемента по параметру;",
-		"Сортировка элементов по параметру;",
-		"Вывести список товаров, хранящихся более 'x' месяцев со стоимостью более 'y' рублей",
-	};
-	CinMenu(menu, 5, text);
 
+	valarray<string> menu = {
+	"Чтение информации о товаре с файла;",
+	"Вывести данные об всех товарах;",
+	"Поиск элемента по параметру;",
+	"Сортировка элементов по параметру;",
+	"Вывести список товаров, хранящихся более 'x' месяцев со стоимостью более 'y' рублей",
+	};
+	
+	Console text(menu.size()+4-1);
+	while (true) {
+		Users::menuShow("Меню для чтения данных", text);
+		CinMenu(menu, text);
+		text.PointerMove();
+		system("cls");
+	}
 }
 
 
@@ -54,6 +68,22 @@ void Users::menuForOnlyReadInfo()
 void Users::Console::GoToXY(short y, short x)
 {
 	SetConsoleCursorPosition(hStdOut, { x,y });
+}
+
+void Users::Console::ConsoleActiveTextColor(int&& n, Console &p)
+{
+	if (n == this->ActiveMenu) {
+		p.SetTextActiveColor(p);
+		cout << "->";
+	}
+	else {
+		p.ConsoleTextColor();
+	}
+}
+
+void Users::Console::SetTextActiveColor(Console& p)
+{
+	SetConsoleTextAttribute(hStdOut, BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_RED  | FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_INTENSITY);
 }
 
 void Users::Console::ConsoleTextColor()
@@ -66,7 +96,7 @@ void Users::Console::ConsoleMenuColorText()
 	SetConsoleTextAttribute(hStdOut, BACKGROUND_GREEN | FOREGROUND_RED | FOREGROUND_RED | FOREGROUND_BLUE |FOREGROUND_GREEN | FOREGROUND_INTENSITY | BACKGROUND_INTENSITY);
 }
 
-void Users::Console::PointerMove(Console& p)
+void Users::Console::PointerMove()
 {
 		char ch;
 		ch = _getch();
@@ -76,12 +106,12 @@ void Users::Console::PointerMove(Console& p)
 		case ESC:
 			exit(0);
 		case DOWN:
-			if (p.ActiveMenu < p.ActiveMenuEnd)
-				p.ActiveMenu++;
+			if (this->ActiveMenu < this->ActiveMenuEnd)
+				this->ActiveMenu++;
 			break;
 		case UP:
-			if (p.ActiveMenu > p.ActiveMenuStart)
-				p.ActiveMenu--;
+			if (this->ActiveMenu > this->ActiveMenuStart)
+				this->ActiveMenu--;
 			break;
 		case ENTRY:
 			/*switch (p.ActiveMenu) {

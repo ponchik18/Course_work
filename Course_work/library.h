@@ -11,4 +11,6 @@
 #include<Windows.h>
 #include<clocale>
 #include<iostream>
+#include<vector>
+#include<valarray>
 using namespace std;
