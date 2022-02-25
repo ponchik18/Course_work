@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Autorization.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Product.cpp" />
     <ClCompile Include="Users.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Autorization.h" />
     <ClInclude Include="library.h" />
     <ClInclude Include="Product.h" />
     <ClInclude Include="Users.h" />

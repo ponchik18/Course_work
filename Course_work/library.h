@@ -8,7 +8,7 @@
 #include<string>
 #include"Product.h"
 #include<Windows.h>
-#include<Windows.h>
+#include<fstream>
 #include<clocale>
 #include<iostream>
 #include<vector>

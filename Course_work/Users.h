@@ -1,5 +1,7 @@
 #pragma once
 #include"library.h"
+#include"Product.h"
+#include"Autorization.h"
 //Создание классов и прототипов методов, реализация методов вынесена в файл <Users.cpp>
 
 class Users // базовый класс 
@@ -11,6 +13,10 @@ protected:
 	void SortProductByProductData(Product* pd);//сортировка по дате
 	void SortProductByProductPrise(Product* pd);//сортировка по цене
 	void CinMenu(valarray<string> &menu, Console& p); //вывод параметров меню
+	char* CoutString();//функция ввода строки 
+	char* CoutStringPassword(Console& p);//функция ввода пароля(строки)
+	void showMenuAutorization(Console& p);
+
 	class Console {
 	public:
 		HANDLE hStdOut; //дискриптор консоли
@@ -21,6 +27,7 @@ protected:
 			hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);// Получаем дескриптор консоли
 			this->ActiveMenu = this->ActiveMenuStart=amstart;
 			this->ActiveMenuEnd = amend;
+			ConsoleCursorVisible(false, 10);
 			} 
 		void GoToXY(short y, short x=40); //перемещение курсора
 		void ConsoleCursorVisible(bool show, short size);// изменяем размер и видимость курсора
@@ -30,18 +37,19 @@ protected:
 		void ConsoleMenuColorText();//меняем цвет меню
 		void PointerMove();// метод для отслеживания нажатия клавиши
 		
-		//void menuShow(string menuName); //в функцию передаётся строка, которая будет отражаться на панели меню
+		void menuShow(string menuName, Console& text); //в функцию передаётся строка, которая будет отражаться на панели меню
 	};
+
+	
 public:
-	void menuShow(string menuName, Console& text); //в функцию передаётся строка, которая будет отражаться на панели меню
 
 	void showInfoAboutProduct(Product* pd) const;//вывод информации об товарах
 	void cinInfoAboutProduct(Product* pd); //ввод информации об товаре
 	void searchProductByFields(Product* pd) const;// поиск товора(-ов) по полю
 	void SortProductByFields(Product* ps);// сортировка данных 
 	void menuForOnlyReadInfo();// меню для работы только с ознакомлкение данных
+	void registerUsers();//региструем пользователя
 
-	friend class Product;
 };
 
 ///////////////////////////////
