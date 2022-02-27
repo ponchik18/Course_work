@@ -13,9 +13,9 @@ protected:
 	void SortProductByProductData(Product* pd);//сортировка по дате
 	void SortProductByProductPrise(Product* pd);//сортировка по цене
 	void CinMenu(valarray<string> &menu, Console& p); //вывод параметров меню
-	char* CoutString();//функция ввода строки 
+	char* CoutString(Console& p);//функция ввода строки 
 	char* CoutStringPassword(Console& p);//функция ввода пароля(строки)
-	void showMenuAutorization(Console& p);
+	//void showMenuAutorization(Console& p);
 
 	class Console {
 	public:
@@ -47,8 +47,8 @@ public:
 	void cinInfoAboutProduct(Product* pd); //ввод информации об товаре
 	void searchProductByFields(Product* pd) const;// поиск товора(-ов) по полю
 	void SortProductByFields(Product* ps);// сортировка данных 
-	void menuForOnlyReadInfo();// меню для работы только с ознакомлкение данных
-	void registerUsers();//региструем пользователя
+//	void menuForOnlyReadInfo();// меню для работы только с ознакомлкение данных
+//	void registerUsers();//региструем пользователя
 
 };
 
@@ -60,15 +60,18 @@ public:
 
 class Administrators : public Users { //класс администратор, который наследуеться от класс Users с модификатором доступа private
 private:
-	enum WorkingMode //перичеление сделано для удобства видимости режима работы 
+	enum WorkingModeAdministrators //перичеление сделано для удобства видимости режима работы 
 	{
 		WorkWithAccount = 1, //работа с аккаунтами
 		WorkWithChangeFields, //работа с редактирование полей 
 		WorkWithOnlyReadInfo // работа только с просмотром полей
 	};
-	void establishMenuForWorkingMode(Product* ps);// администратор выбирает режим доступа и затем вызывается метод с соответсвенным меню режима
+	//void establishMenuForWorkingMode(Product* ps);// администратор выбирает режим доступа и затем вызывается метод с соответсвенным меню режима
 public:
-	
+	void showMenuAutorization(Console& p);// вызывет метод вызова меню для пользователя
+	void menuForOnlyReadInfo();// меню для работы только с ознакомлкение данных
+	void registerUsers();//региструем пользователя
+
 	void SortProductByFields(Product* ps);// сортировка данных 
 	void showInfoAboutProduct() const; //вывод информации об товарах
 	void cinInfoAboutProduct(Product* pd); //ввод информации об товаре
@@ -76,7 +79,6 @@ public:
 	void changeProductFields(Product* pd);//изменения информации об товаре
 	void estabishWorkMode();//определение режима работы
 	void establishMenuForWorkingMode();// администратор выбирает режим доступа и затем вызывается метод с соответсвенным меню режима
-	void menuForOnlyReadInfo();// меню для работы только с ознакомлкение данных
 	void menuForWorkingWithAccount();//меню для работы с аккаунтами
 	void menuForWorkingWithCnangeFields();//меню для работы с редактировние данных
 

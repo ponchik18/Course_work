@@ -43,25 +43,51 @@ void Users::Console::menuShow(string menuName, Console & text)
 	cout << "+------------------------------------------------------------------------------------------------------------------------------------+" << endl;
 }
 
-char* Users::CoutString()
+char* Users::CoutString(Console& p)
 {
 
 		char c;
 		int len = 1;
 		char* str = new char[0];
-		while ((c = cin.get()) != '\n')
-		{
-			char* temp = new char[len + 1];
+			while ((c = _getch()) != '\r')
+			{
+				if ((c != 8) && (len < 15)) {
 
-			for (int i = 0; i < len - 1; i++) {
-				temp[i] = str[i];
+					char* temp = new char[len + 1];
+
+
+					for (int i = 0; i < len - 1; i++) {
+						temp[i] = str[i];
+					}
+					temp[len - 1] = c;
+					temp[len] = '\0';
+					delete[] str;
+					str = temp;
+					len++;
+					cout << str[len-2];
+				}
+				else if (len != 1) {
+					//c = _getch();
+					char* temp = new char[len];
+					for (int i = 0; i < len - 2; i++) {
+						temp[i] = str[i];
+					}
+					temp[len - 2] = '\0';
+
+					delete[] str;
+					str = temp;
+					len--;
+					p.GoToXY(16, 59);
+					for (int i = 0; i < len + 1; i++) {
+						p.GoToXY(16, 59 + i);
+						cout << " ";
+					}
+					p.GoToXY(16, 59);
+					for (int i = 0; i < len - 1; i++) {
+						cout << str[i];
+					}
+				}
 			}
-			temp[len - 1] = c;
-			temp[len] = '\0';
-			delete[] str;
-			str = temp;
-			len++;
-		}
 		return str;
 	
 }
@@ -73,8 +99,10 @@ char* Users::CoutStringPassword(Console &p)
 	char* str = new char[0];
 	while ((c = _getch()) != '\r')
 	{
-		if (c != 8) {
+		if ((c != 8) && (len<15) ) {
+
 			char* temp = new char[len + 1];
+			
 
 			for (int i = 0; i < len - 1; i++) {
 				temp[i] = str[i];
@@ -111,7 +139,7 @@ char* Users::CoutStringPassword(Console &p)
 	return str;
 }
 
-void Users::menuForOnlyReadInfo()
+void Administrators::menuForOnlyReadInfo()
 {
 	registerUsers();
 	valarray<string> menu = {
@@ -132,7 +160,7 @@ void Users::menuForOnlyReadInfo()
 	}
 }
 
-void Users::showMenuAutorization(Console& p)
+void Administrators::showMenuAutorization(Console& p)
 {
 	p.GoToXY(12, 51);
 	cout << "ДОБРО ПОЖАЛОВАТЬ!!!";
@@ -160,7 +188,7 @@ void Users::showMenuAutorization(Console& p)
 
 
 
-void Users::registerUsers()
+void Administrators::registerUsers()
 {
 	int flag = 3;
 	Console Auto(9);
@@ -169,19 +197,28 @@ void Users::registerUsers()
 		showMenuAutorization(Auto);
 		char* login,*password;
 		Auto.GoToXY(16, 59);
-		login = Users::CoutString();
+		login = Users::CoutString(Auto);
 		Auto.GoToXY(17, 60);
 		password = Users::CoutStringPassword(Auto);
 		Autorization Maim;
-		if (!Maim.readMainAccountFromFile(login, password)) {
-			Auto.GoToXY(20, 30);
-			cout << "Неправильно введён пароль или логин, попробуйте ещё раз. Количество попыток: " << --flag << " ." << endl;
-			_getch();
-			delete[] login;
-			delete[] password;
-		}
-		else
+		int mode = 0;
+		if (Maim.readMainAccountFromFile(login, password)) {
 			break;
+		}
+
+		else if (Maim.EnterIntoAccount(login, password,&mode)) {
+			break;
+		}
+		else if (Maim.registerAccount(login, password)) {
+			break;
+		}
+			//Auto.GoToXY(20, 30);
+			//cout << "Неправильно введён пароль или логин, попробуйте ещё раз. Количество попыток: " << --flag << " ." << endl;
+			//_getch();
+			//delete[] login;
+			//delete[] password;
+		
+		 
 		if (flag == 0) {
 			Auto.GoToXY(21, 60);
 			cout << "На это всё...." << endl;

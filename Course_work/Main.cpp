@@ -7,7 +7,7 @@ int main() {
 	SetConsoleCP(1251);
 	system("mode con cols=134 lines=40");
 	system("color A1");
-	Users ts;
+	Administrators ts;
 	ts.menuForOnlyReadInfo();
 
 	
@@ -20,6 +20,11 @@ int main() {
 //4)помен€ть на UTF-8 расширение и перезалить на GitHub
 // логин от основного админа равен "MaksBovkun2003"
 // пароль "asdf1234"
+
+
+//«адача на 27.02.2022
+//	1)написать реализацию метода по потверждени€ главным администратором пользователей
+//	2)написать мен€ авторизации
 
 //int c = 0;
 //std::string pwd;
