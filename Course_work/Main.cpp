@@ -8,9 +8,7 @@ int main() {
 	system("mode con cols=134 lines=40");
 	system("color A1");
 	Administrators ts;
-	ts.menuForOnlyReadInfo();
-
-	
+	while (ts.registerUsers()) {}
 	return 0;
 }
 

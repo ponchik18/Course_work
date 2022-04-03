@@ -1,3 +1,4 @@
 ﻿  Users.cpp
-D:\Учёба\Course_work\Course_work\Users.cpp(19,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Учёба\Course_work\Course_work\Users.cpp(136,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\Учёба\Course_work\Course_work\Users.cpp(154,21): warning C4018: <: несоответствие типов со знаком и без знака
   Course_work.vcxproj -> D:\Учёба\Course_work\Debug\Course_work.exe

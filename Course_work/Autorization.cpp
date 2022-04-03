@@ -1,16 +1,19 @@
 #include "Autorization.h"
 
-bool Autorization::EnterIntoAccount(char* MainLogin, char* MainPassword, int *mode)
+bool Autorization::EnterIntoAccount(char* MainLogin, char* MainPassword, UsersType& mode)
 {
-	ifstream AccountUsers("AccountUsersAdministration.dat", ios::binary | ios::in);
+	ifstream AccountUsers("AccountActivated.dat", ios::binary | ios::in);
 	if (!(AccountUsers.is_open())) {
 		cout << "Ошибка открытия файла с аккаунтами" << endl;
 		exit(0);
 	}
 	char* login = nullptr;
 	char* password = nullptr;
-	while (!(AccountUsers.eof())) {
-		AccountUsers.read((char*)mode, sizeof(int));
+	int flag = -1;
+	while (AccountUsers.read((char*)&flag, sizeof(int))) {
+		if (flag == 0)
+			mode = user;
+		else mode = admin;
 		int len;
 		
 		AccountUsers.read((char*)&len, sizeof(int));//читаем длинну логин
@@ -53,7 +56,7 @@ bool Autorization::signInUsers(char* MainLogin, char* MainPassword)
 		}
 
 		else {
-			AccountUsers.read((char*)login, len * sizeof(char));
+			AccountUsers.read(login, len * sizeof(char));
 		}
 
 		AccountUsers.read((char*)&len, sizeof(int));
@@ -63,10 +66,10 @@ bool Autorization::signInUsers(char* MainLogin, char* MainPassword)
 		}
 
 		else {
-			AccountUsers.read((char*)password, len * sizeof(char));
+			AccountUsers.read(password, len * sizeof(char));
 		}
 		if (i != 0) {
-			if (login, MainLogin, password, MainPassword) {
+			if (compareAccount(login, MainLogin, password, MainPassword)) {
 				cout << "Аккаунт найден!" << endl;
 				return true;
 			}
@@ -77,22 +80,42 @@ bool Autorization::signInUsers(char* MainLogin, char* MainPassword)
 	return true;
 }
 
-bool Autorization::registerAccount(char* MainLogin, char* MainPassword)
+bool Autorization::registerAccount(char* MainLogin, char* MainPassword, UsersType &mode)
 {
-	ofstream AccountUsers("AccountUsersAdministration.dat", ios::binary | ios::app);
-	if (!(AccountUsers.is_open())) {
-		cout << "Ошибка открытия файла с главным админом" << endl;
+	if (IfCreatedAccount(MainLogin))
+	{
+		cout <<endl<<endl <<"\t\t\t\t\t\tДанный аккаунт уже существует"<<endl<< "\t\t\t\t\t\t";
 		system("pause");
 		system("cls");
 		return false;
 	}
-	int j = AccountUsers.tellp();
+	ofstream AccountUsers("NotConfirmedAccount.dat", ios::binary | ios::app);
+	if (!(AccountUsers.is_open())) {
+		cout << "Ошибка открытия файла с данными о пользователях" << endl;
+		system("pause");
+		system("cls");
+		exit(0);
+	}
 	system("cls");
-	cout << "выберите режим работы 1-Users, 2-Administrators";
-	int i=0;
-	//AccountUsers.write((char*)&i, sizeof(int));
-	cin >> i;
-	AccountUsers.write((char*)&i, sizeof(i));
+	valarray<string> menu = {
+	"Пользователь;",
+	"Администратор;"
+	};
+
+	Users::Console text(menu.size() + 4 - 1);
+	int flag = -1;
+	while (flag==-1) {
+
+		text.menuShow("Меню для выбора режима работы", text);
+		text.CinMenuAutorization(menu);
+		flag=text.PointerMoveModeRegistration();
+		system("cls");
+
+	}
+	if (flag == 0)
+		mode = user;
+	else mode = admin;
+	AccountUsers.write((char*)&flag, sizeof(flag));
 	int len = strlen(MainLogin) + 1;
 	AccountUsers.write((char*)&len,sizeof(len));
 	AccountUsers.write((char*)MainLogin, sizeof(char) * len);
@@ -113,6 +136,56 @@ bool Autorization::printLoginInFile()
 	return true;
 }
 
+bool Autorization::IfCreatedAccountChouseFail(ifstream& file, char* MainLogin)
+{
+	if (!(file.is_open())) {
+		system("cls");
+		cout << "Ошибка открытия файла с уже зарегистрированными пользователями!" << endl;
+		system("pause");
+		exit(0);
+	}
+	int c;
+	while (file.read((char*)&c, sizeof(c))) {
+		char* login;
+
+		int len = 0;
+
+		file.read((char*)&len, sizeof(len));
+		login = new char[len];
+		file.read((char*)login, len * sizeof(char));
+		file.read((char*)&len, sizeof(len));
+		file.seekg(len * sizeof(char), ios::cur);
+		if (strcmp(login, MainLogin) == 0) {
+			delete[] login;
+			return true;
+		}
+		delete[] login;
+	}
+	file.close();
+	return false;
+}
+
+bool Autorization::IfCreatedAccount(char* MainLogin)
+{
+	bool flag, rezult=false;
+	ifstream AccountUsers("AccountActivated.dat", ios::binary | ios::in);
+	flag=IfCreatedAccountChouseFail(AccountUsers, MainLogin);
+	AccountUsers.close();
+	if (flag == true)
+		rezult=true;
+	AccountUsers.open("MainAdmin.dat", ios::binary | ios::in);
+	flag = IfCreatedAccountChouseFail(AccountUsers, MainLogin);
+	if (flag == true)
+		rezult = true;
+	AccountUsers.close();
+	AccountUsers.open("NotConfirmedAccount.dat", ios::binary | ios::in);
+	flag = IfCreatedAccountChouseFail(AccountUsers, MainLogin);
+	if (flag == true)
+		rezult = true;
+	AccountUsers.close();
+	return rezult;
+}
+
 bool Autorization::compareAccount(char* CinLogin, char* login, char* CinPassword, char* password)
 {
 	if ((strcmp(CinLogin, login) == 0) && (strcmp(CinPassword, password) == 0)) {
@@ -128,8 +201,9 @@ bool Autorization::readMainAccountFromFile(char* MainLogin, char* MainPassword)
 		cout << "Ошибка открытия файла с главным админом" << endl;
 		exit(0);
 	}
-	char* login;
 	int len;
+	mainAdmin.read((char*)&len, sizeof(int));
+	char* login;
 	mainAdmin.read((char*)&len, sizeof(int));
 	login = new char[len];
 	mainAdmin.read((char*)login, sizeof(char)*len);
